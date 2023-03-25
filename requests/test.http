@@ -1,0 +1,43 @@
+@hostname = localhost
+@port = 3001
+@host = http://{{hostname}}:{{port}}
+
+###
+
+GET {{host}}/api/sales/ HTTP/1.1
+Accept: application/json
+
+###
+GET {{host}}/api/games/ HTTP/1.1
+Accept: application/json
+
+###
+GET {{host}}/api/sales/63ca8a392ac4e32545173d7c HTTP/1.1
+Accept: application/json
+
+###
+GET {{host}}/api/games/63caa9a391b89571a7c8471c HTTP/1.1
+Accept: application/json
+
+###
+POST {{host}}/api/games HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "CyberPunk",
+  "price": 79.99,
+  "stock": 500
+}
+
+###
+POST {{host}}/api/sales HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "buyer": "Dan",
+  "date": "2021-01-02T10:17:35.457+00:00",
+  "quantity": 2,
+  "game":"63caa9a391b89571a7c8471c"
+}
