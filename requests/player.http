@@ -5,7 +5,7 @@
 ###
 GET {{host}}/api/players/ HTTP/1.1
 Accept: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBAYS5jb20iLCJpYXQiOjE2ODAwMzIzNzAsImV4cCI6MTc2NjQzMjM3MH0.M0ZtLZjfczF2yIE6FgmMJzCb8zAc0GkjypcWBVyQKns
+Authorization: 
 
 ###
 POST {{host}}/api/players/signup HTTP/1.1
@@ -15,7 +15,7 @@ Content-Type: application/json
 {
   "firstname": "Kendall",
   "lastname": "Jenner",
-  "email": "p@a.com",
+  "email": "p@v.com",
   "password": "bryantkobe"
 }
 
