@@ -1,0 +1,36 @@
+@hostname = localhost
+@port = 3001
+@host = http://{{hostname}}:{{port}}
+
+###
+GET {{host}}/api/players/ HTTP/1.1
+Accept: application/json
+Authorization: 
+
+###
+POST {{host}}/api/players/signup HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "firstname": "Kendall",
+  "lastname": "Jenner",
+  "email": "p@v.com",
+  "password": "bryantkobe"
+}
+
+###
+POST {{host}}/api/players/signin HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "p@v.com",
+  "password": "bryantkobe"
+}
+
+###
+GET {{host}}/api/players/641f7e1c8f567613e535eb73 HTTP/1.1
+Accept: application/json
+
+
