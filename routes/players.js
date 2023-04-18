@@ -23,130 +23,110 @@ router.get("/", authorize, function (req, res, next) {
 /*
  * SIGNUP PLAYER
  */
-router.post("/signup", async (req, res) => {
+router.post("/register", async (req, res) => {
   let { firstname, lastname, email, password } = req.body;
   firstname = firstname.trim();
   lastname = lastname.trim();
   email = email.trim();
   password = password.trim();
+
   if (firstname == "" || lastname == "" || email == "" || password == "") {
     return res.status(400).send("Empty credentials supplied.");
-  } else {
-    // Check existing user
-    Player.find({ email })
-      .then((result) => {
-        if (result.length) {
-          return res
-            .status(400)
-            .send("Player with this provided email exists.");
-        } else {
-          // Hash password
-          bcrypt
-            .hash(password, 10)
-            .then((hashedPassword) => {
-              const newPlayer = Player({
-                firstname,
-                lastname,
-                email,
-                password: hashedPassword,
-              });
-              // Save user
-              newPlayer
-                .save()
-                .then((result) => {
-                  // Sign a token
-                  jwt.sign(
-                    { email: newPlayer.email },
-                    jwtSecret,
-                    { expiresIn: LIFETIME_JWT },
-                    (err, token) => {
-                      if (err) {
-                        return res.status(400).send("Jwt Sign");
-                      }
-                      res.json({
-                        token: token,
-                        data: result,
-                      });
-                    }
-                  );
-                })
-                .catch((err) => {
-                  return res
-                    .status(400)
-                    .send("Error occurred while saving a player.");
-                });
+  }
+
+  // Check existing user
+  Player.find({ email }).then((result) => {
+    if (result.length) {
+      return res.status(400).send("Player with this provided email exists.");
+    } else {
+      // Hash password
+      bcrypt
+        .hash(password, 10)
+        .then((hashedPassword) => {
+          const newPlayer = Player({
+            firstname,
+            lastname,
+            email,
+            password: hashedPassword,
+          });
+          // Save user
+          newPlayer
+            .save()
+            .then((result) => {
+              // Sign a token
+              jwt.sign(
+                { email: newPlayer.email },
+                jwtSecret,
+                { expiresIn: LIFETIME_JWT },
+                (err, token) => {
+                  if (err) {
+                    return res.status(400).send("Jwt Sign");
+                  }
+                  res.json({
+                    token: token,
+                    data: result,
+                  });
+                }
+              );
             })
             .catch((err) => {
               return res
                 .status(400)
-                .send("Error occurred while hashing password.");
+                .send("Error occurred while saving a player.");
             });
-        }
-      })
-      .catch((err) => {
-        return res
-          .status(400)
-          .send("Error occurred while checking for existing player.");
-      });
-  }
+        })
+        .catch((err) => {
+          return res.status(400).send("Error occurred while hashing password.");
+        });
+    }
+  });
 });
 
-/*
- * SIGNIN USER
- */
-router.post("/signin", (req, res) => {
+router.post("/login", (req, res) => {
   let { email, password } = req.body;
+
   email = email.trim();
   password = password.trim();
 
   if (email == "" || password == "") {
     return res.status(400).send("Empty credentials supplied.");
-  } else {
-    // Find user by the email
-    Player.find({ email })
-      .then((data) => {
-        if (data.length) {
-          // Compare both hash password
-          const hashedPassword = data[0].password;
-          bcrypt
-            .compare(password, hashedPassword)
-            .then((result) => {
-              if (result) {
-                // Sign token
-                jwt.sign(
-                  { email: data.email },
-                  jwtSecret,
-                  { expiresIn: LIFETIME_JWT },
-                  (err, token) => {
-                    if (err) {
-                      return res
-                        .status(500)
-                        .send(
-                          "Error occurend while checking for signing token"
-                        );
-                    }
-                    return res.json({ token: token, data: data });
-                  }
-                );
-              } else {
-                return res.status(400).send("Invalid password.");
-              }
-            })
-            .catch((err) => {
-              return res
-                .status(400)
-                .send("Error occurred while comparing password.");
-            });
-        } else {
-          return res.status(404).send("Player not found.");
-        }
-      })
-      .catch((err) => {
-        return res
-          .status(400)
-          .send("Error occurred while checking for existing password.");
-      });
   }
+
+  // Find user by the email
+  Player.find({ email }).then((data) => {
+    if (data.length) {
+      const hashedPassword = data[0].password;
+      bcrypt
+        .compare(password, hashedPassword)
+        .then((result) => {
+          if (result) {
+            // Sign token
+            jwt.sign(
+              { email: data.email },
+              jwtSecret,
+              { expiresIn: LIFETIME_JWT },
+              (err, token) => {
+                if (err) {
+                  return res
+                    .status(500)
+                    .send("Error occured while checking for signing token");
+                }
+                return res.json({ token: token, data: data });
+              }
+            );
+          } else {
+            return res.status(400).send("Invalid password.");
+          }
+        })
+        .catch((err) => {
+          return res
+            .status(400)
+            .send("Error occurred while comparing password.");
+        });
+    } else {
+      return res.status(404).send("Player not found.");
+    }
+  });
 });
 
 // Find user by ID
