@@ -14,7 +14,7 @@ const LIFETIME_JWT = 24 * 60 * 60 * 1000; // 10;// in seconds // 24 * 60 * 60 * 
 /*
  * GET ALL PLAYERS
  */
-router.get("/", authorize, function (req, res, next) {
+router.get("/", function (req, res, next) {
   Player.find({})
     .then((users) => res.json(users))
     .catch((err) => next(err));
