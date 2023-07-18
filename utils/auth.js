@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Player = require("../models/Player.js");
+const User = require("../models/User.js");
 
 const jwtSecret = "jkjJ1235Ohno!";
 
@@ -14,8 +14,8 @@ const authorize = (req, res, next) => {
 
   jwt.verify(token, jwtSecret, (err, token) => {
     if (err) return res.status(401).send(err.message);
-    const player = Player.find({ email: token.email });
-    if (!player) return res.status(401).send("Player not found.");
+    const user = User.find({ email: token.email });
+    if (!User) return res.status(401).send("User not found.");
     // authorization is completed, call the next middleware
     next();
   });
