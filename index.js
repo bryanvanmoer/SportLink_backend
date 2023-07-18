@@ -3,7 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const middlewares = require("./utils/middlewares");
-const playersRouter = require("./routes/players");
+const usersRouter = require("./routes/users");
+
 // Connect to database
 mongoose
   .connect(MONGODB_URI, {
@@ -20,7 +21,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(middlewares.logger);
-app.use("/api/players", playersRouter);
+app.use("/api/users", usersRouter);
 app.use(middlewares.errorHandler);
 
 // Start server

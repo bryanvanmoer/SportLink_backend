@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 let { authorize, signAsynchronous } = require("../utils/auth");
 
 /* mongodb User model */
-const Player = require("../models/Player");
+const User = require("../models/User");
 
 const jwtSecret = "jkjJ1235Ohno!";
 const LIFETIME_JWT = 24 * 60 * 60 * 1000; // 10;// in seconds // 24 * 60 * 60 * 1000 = 24h
@@ -12,16 +12,16 @@ const LIFETIME_JWT = 24 * 60 * 60 * 1000; // 10;// in seconds // 24 * 60 * 60 * 
 //const NotFoundError = require("../utils/NotFoundError");
 
 /*
- * GET ALL PLAYERS
+ * GET ALL USERS
  */
-router.get("/", function (req, res, next) {
-  Player.find({})
+router.get("/", authorize, function (req, res, next) {
+  User.find({})
     .then((users) => res.json(users))
     .catch((err) => next(err));
 });
 
 /*
- * SIGNUP PLAYER
+ * REGISTER USER
  */
 router.post("/register", async (req, res) => {
   let { firstname, lastname, email, password } = req.body;
@@ -35,32 +35,32 @@ router.post("/register", async (req, res) => {
   }
 
   // Check existing user
-  Player.find({ email }).then((result) => {
+  User.find({ email }).then((result) => {
     if (result.length) {
-      return res.status(400).send("Player with this provided email exists.");
+      return res.status(400).send("User with this provided email exists.");
     } else {
       // Hash password
       bcrypt
         .hash(password, 10)
         .then((hashedPassword) => {
-          const newPlayer = Player({
+          const newUser = User({
             firstname,
             lastname,
             email,
             password: hashedPassword,
           });
           // Save user
-          newPlayer
+          newUser
             .save()
             .then((result) => {
               // Sign a token
               jwt.sign(
-                { email: newPlayer.email },
+                { email: newUser.email },
                 jwtSecret,
                 { expiresIn: LIFETIME_JWT },
                 (err, token) => {
                   if (err) {
-                    return res.status(400).send("Jwt Sign");
+                    return res.status(400).send("Jwt Sign Error");
                   }
                   res.json({
                     token: token,
@@ -72,7 +72,7 @@ router.post("/register", async (req, res) => {
             .catch((err) => {
               return res
                 .status(400)
-                .send("Error occurred while saving a player.");
+                .send("Error occurred while saving an user.");
             });
         })
         .catch((err) => {
@@ -93,7 +93,7 @@ router.post("/login", (req, res) => {
   }
 
   // Find user by the email
-  Player.find({ email }).then((data) => {
+  User.find({ email }).then((data) => {
     if (data.length) {
       const hashedPassword = data[0].password;
       bcrypt
@@ -124,19 +124,19 @@ router.post("/login", (req, res) => {
             .send("Error occurred while comparing password.");
         });
     } else {
-      return res.status(404).send("Player not found.");
+      return res.status(404).send("User not found.");
     }
   });
 });
 
 // Find user by ID
 router.get("/:id", (req, res, next) => {
-  Player.findById(req.params.id)
-    .then((player) => {
-      if (player) {
-        res.json(player);
+  User.findById(req.params.id)
+    .then((user) => {
+      if (user) {
+        res.json(user);
       } else {
-        return res.status(404).send("Player not found.");
+        return res.status(404).send("User not found.");
       }
     })
     .catch((err) => next(err));

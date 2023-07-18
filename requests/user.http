@@ -1,0 +1,36 @@
+@hostname = localhost
+@port = 3001
+@host = http://{{hostname}}:{{port}}
+
+###
+GET {{host}}/api/users/ HTTP/1.1
+Accept: application/json
+Authorization: 
+
+###
+POST {{host}}/api/users/register HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "firstname": "Kim",
+  "lastname": "Kardashian",
+  "email": "kk@outlook.com",
+  "password": "kk"
+}
+
+###
+POST {{host}}/api/users/login HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "kj@outlook.com",
+  "password": "kj"
+}
+
+###
+GET {{host}}/api/users/64b6cbc1cfe232d02cf7cc74 HTTP/1.1
+Accept: application/json
+
+
