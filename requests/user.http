@@ -5,7 +5,7 @@
 ###
 GET {{host}}/api/users/ HTTP/1.1
 Accept: application/json
-Authorization: 
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpwQG91dGxvb2suY29tIiwiaWF0IjoxNjg5NzExMTAzLCJleHAiOjE3NzYxMTExMDN9.Q5l4vAXLsduzi6TPc_S1Q9R4cmbMBUyBp_WSZ62Dw9Q
 
 ###
 POST {{host}}/api/users/register HTTP/1.1
@@ -13,10 +13,10 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "firstname": "Kim",
-  "lastname": "Kardashian",
-  "email": "kk@outlook.com",
-  "password": "kk"
+  "firstname": "Elvis",
+  "lastname": "Presley",
+  "email": "ep@outlook.com",
+  "password": "ep"
 }
 
 ###
@@ -25,8 +25,8 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "email": "kj@outlook.com",
-  "password": "kj"
+  "email": "ep@outlook.com",
+  "password": "ep"
 }
 
 ###
@@ -34,3 +34,7 @@ GET {{host}}/api/users/64b6cbc1cfe232d02cf7cc74 HTTP/1.1
 Accept: application/json
 
 
+###
+GET {{host}}/api/users/user HTTP/1.1
+Accept: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVwQG91dGxvb2suY29tIiwiaWF0IjoxNjg5NzE0OTI2LCJleHAiOjE3NzYxMTQ5MjZ9.mmRWnfLc_JTpD93PxzfzJBsMwdoQGhjLQdjdKHS-Y60

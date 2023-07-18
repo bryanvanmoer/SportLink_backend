@@ -6,7 +6,8 @@ let { authorize, signAsynchronous } = require("../utils/auth");
 /* mongodb User model */
 const User = require("../models/User");
 
-const jwtSecret = "jkjJ1235Ohno!";
+const jwtSecret = process.env.JWTSECRET;
+
 const LIFETIME_JWT = 24 * 60 * 60 * 1000; // 10;// in seconds // 24 * 60 * 60 * 1000 = 24h
 
 //const NotFoundError = require("../utils/NotFoundError");
@@ -18,6 +19,27 @@ router.get("/", authorize, function (req, res, next) {
   User.find({})
     .then((users) => res.json(users))
     .catch((err) => next(err));
+});
+
+/**
+ * GET EMAIL VIA TOKEN
+ */
+
+router.get("/user", authorize, function (req, res, next) {
+  const token = req.headers.authorization;
+  if (!token) return res.status(401).send("You are not authenticated.");
+  jwt.verify(token, jwtSecret, (err, token) => {
+    if (err) return res.status(401).send(err.message);
+    User.find({ email: token.email })
+      .then((user) => {
+        if (user) {
+          res.json(user);
+        } else {
+          return res.status(404).send("User not found.");
+        }
+      })
+      .catch((err) => next(err));
+  });
 });
 
 /*
@@ -53,21 +75,7 @@ router.post("/register", async (req, res) => {
           newUser
             .save()
             .then((result) => {
-              // Sign a token
-              jwt.sign(
-                { email: newUser.email },
-                jwtSecret,
-                { expiresIn: LIFETIME_JWT },
-                (err, token) => {
-                  if (err) {
-                    return res.status(400).send("Jwt Sign Error");
-                  }
-                  res.json({
-                    token: token,
-                    data: result,
-                  });
-                }
-              );
+              return res.status(200).send();
             })
             .catch((err) => {
               return res
@@ -102,7 +110,7 @@ router.post("/login", (req, res) => {
           if (result) {
             // Sign token
             jwt.sign(
-              { email: data.email },
+              { email: data[0].email },
               jwtSecret,
               { expiresIn: LIFETIME_JWT },
               (err, token) => {

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.js");
 
-const jwtSecret = "jkjJ1235Ohno!";
+const jwtSecret = process.env.JWTSECRET;
 
 /**
  * Authorize middleware to be used on the routes to be secured
